@@ -1,1 +1,976 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0D1B2A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CM Alert">
+  <title>CM Alert — TT&A Advisors</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "49255e1e-c196-4825-a72d-1a9da40e0b66",
+        notifyButton: { enable: false },
+        welcomeNotification: { disable: true }
+      });
+      await OneSignal.Notifications.requestPermission(true);
+    });
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg: #0D1B2A;
+      --bg2: #112236;
+      --bg3: #162d47;
+      --accent-blue: #1565C0;
+      --accent-blue-light: #1976D2;
+      --green: #2E7D32;
+      --green-light: #43A047;
+      --amber: #E65100;
+      --amber-light: #F57C00;
+      --red: #B71C1C;
+      --red-light: #C62828;
+      --text: #E8F0F7;
+      --text2: #90A4AE;
+      --text3: #546E7A;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+    }
+
+    /* SCREENS */
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      height: -webkit-fill-available;
+      overflow-y: auto;
+    }
+    .screen.active { display: flex; }
+
+    /* HEADER */
+    .app-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: calc(var(--safe-top) + 16px) 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .logo-container {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #0D5273;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .logo-svg {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #0D5273;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-text { flex: 1; }
+    .header-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .header-sub {
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green-light);
+      box-shadow: 0 0 6px var(--green-light);
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* STATUS CARD */
+    .status-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .status-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(46,125,50,0.15);
+      border: 2px solid rgba(67,160,71,0.3);
+    }
+
+    .status-icon svg { width: 36px; height: 36px; }
+
+    .status-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+
+    .status-value {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--green-light);
+    }
+
+    .status-desc {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* ALERT CARD - quando arriva un alert */
+    .alert-card {
+      border-radius: 16px;
+      padding: 20px;
+      display: none;
+    }
+
+    .alert-card.verde { background: rgba(46,125,50,0.12); border: 1px solid rgba(67,160,71,0.3); }
+    .alert-card.giallo { background: rgba(230,81,0,0.12); border: 1px solid rgba(245,124,0,0.4); }
+    .alert-card.rosso { background: rgba(183,28,28,0.15); border: 1px solid rgba(198,40,40,0.4); }
+
+    .alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .alert-badge.verde { background: rgba(67,160,71,0.2); color: #66BB6A; }
+    .alert-badge.giallo { background: rgba(245,124,0,0.2); color: #FFA726; }
+    .alert-badge.rosso { background: rgba(198,40,40,0.2); color: #EF5350; animation: flash 1s ease-in-out infinite; }
+
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .alert-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .alert-message {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .alert-time {
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    /* CONFERENCE BUTTON */
+    .btn-conference {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-blue);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-conference:hover { background: var(--accent-blue-light); }
+
+    /* INFO CARDS */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .info-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .info-card-label {
+      font-size: 11px;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .info-card-value {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* FOOTER */
+    .app-footer {
+      padding: 16px 20px calc(var(--safe-bottom) + 16px);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .btn-admin {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      color: var(--text3);
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-admin:hover {
+      border-color: var(--border2);
+      color: var(--text2);
+      background: var(--bg2);
+    }
+
+    /* ADMIN SCREEN */
+    .admin-header {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: calc(var(--safe-top) + 16px) 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: var(--text2);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .admin-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* LOGIN FORM */
+    .login-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      gap: 16px;
+    }
+
+    .login-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .login-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--text3);
+      text-align: center;
+      margin-top: -8px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus { border-color: var(--accent-blue-light); }
+    .input-field::placeholder { color: var(--text3); }
+
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent-blue);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-login:hover { background: var(--accent-blue-light); }
+
+    .login-error {
+      font-size: 13px;
+      color: #EF5350;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    /* ADMIN PANEL */
+    .admin-content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+
+    .level-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .level-card:hover { border-color: var(--border2); }
+    .level-card.selected-1 { border-color: rgba(67,160,71,0.5); background: rgba(46,125,50,0.1); }
+    .level-card.selected-2 { border-color: rgba(245,124,0,0.5); background: rgba(230,81,0,0.1); }
+    .level-card.selected-3 { border-color: rgba(198,40,40,0.5); background: rgba(183,28,28,0.12); }
+
+    .level-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-1 { background: var(--green-light); box-shadow: 0 0 8px var(--green-light); }
+    .dot-2 { background: #FFA726; box-shadow: 0 0 8px #FFA726; }
+    .dot-3 { background: #EF5350; box-shadow: 0 0 8px #EF5350; animation: pulse-dot 1.5s infinite; }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 8px #EF5350; }
+      50% { box-shadow: 0 0 16px #EF5350, 0 0 24px #EF5350; }
+    }
+
+    .level-info { flex: 1; }
+
+    .level-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 3px;
+    }
+
+    .level-desc { font-size: 12px; color: var(--text2); }
+
+    .level-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .badge-1 { background: rgba(67,160,71,0.15); color: #66BB6A; border: 1px solid rgba(67,160,71,0.3); }
+    .badge-2 { background: rgba(245,124,0,0.15); color: #FFA726; border: 1px solid rgba(245,124,0,0.3); }
+    .badge-3 { background: rgba(198,40,40,0.15); color: #EF5350; border: 1px solid rgba(198,40,40,0.3); }
+
+    .preview-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 70px;
+    }
+
+    .preview-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 8px;
+    }
+
+    .preview-text {
+      font-size: 13px;
+      color: var(--text3);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .preview-text.active { color: var(--text2); font-style: normal; }
+
+    .btn-send {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-send:disabled {
+      background: var(--bg3);
+      color: var(--text3);
+      cursor: not-allowed;
+      border: 1px solid var(--border);
+    }
+
+    .btn-send.ready-1 { background: var(--green); color: #E8F5E9; }
+    .btn-send.ready-2 { background: var(--amber); color: #FFF3E0; }
+    .btn-send.ready-3 { background: var(--red); color: #FFEBEE; }
+    .btn-send.ready-1:hover { background: var(--green-light); }
+    .btn-send.ready-2:hover { background: var(--amber-light); }
+    .btn-send.ready-3:hover { background: var(--red-light); }
+    .btn-send:active:not(:disabled) { transform: scale(0.98); }
+
+    .status-bar {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      text-align: center;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-bar.idle { background: transparent; color: transparent; }
+    .status-bar.sending { background: rgba(21,101,192,0.15); color: #64B5F6; border: 1px solid rgba(21,101,192,0.3); }
+    .status-bar.success { background: rgba(46,125,50,0.15); color: #66BB6A; border: 1px solid rgba(67,160,71,0.3); }
+    .status-bar.error { background: rgba(183,28,28,0.15); color: #EF5350; border: 1px solid rgba(198,40,40,0.3); }
+
+    .admin-footer {
+      padding: 12px 20px calc(var(--safe-bottom) + 12px);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text3);
+      font-family: 'Barlow', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover { color: var(--text2); border-color: var(--border2); }
+
+    /* HISTORY */
+    .history-section { margin-top: 4px; }
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .history-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .history-text { flex: 1; color: var(--text2); }
+    .history-time { color: var(--text3); font-size: 11px; }
+  </style>
+</head>
+<body>
+
+<!-- SCHERMATA PRINCIPALE DESTINATARI -->
+<div class="screen active" id="screen-main">
+  <div class="app-header">
+    <div class="logo-svg">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <text x="4" y="22" font-family="Arial Black" font-size="14" font-weight="900" fill="white">TT</text>
+        <text x="20" y="22" font-family="Arial" font-size="14" fill="#90A4AE">a</text>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="header-title">CM Alert</div>
+      <div class="header-sub">TT&amp;A Advisors</div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      <span>Attivo</span>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="status-card">
+      <div class="status-icon">
+        <svg viewBox="0 0 36 36" fill="none" stroke="#43A047" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 3C9.716 3 3 9.716 3 18s6.716 15 15 15 15-6.716 15-15S26.284 3 18 3z"/>
+          <path d="M12 18l4 4 8-8"/>
+        </svg>
+      </div>
+      <div class="status-label">Stato Sistema</div>
+      <div class="status-value" id="main-status-value">Operativo</div>
+      <div class="status-desc" id="main-status-desc">Nessun alert attivo. Il sistema è in ascolto.</div>
+    </div>
+
+    <!-- ALERT CARD - visibile quando arriva un alert -->
+    <div class="alert-card" id="alert-card">
+      <div class="alert-badge" id="alert-badge">● Allerta</div>
+      <div class="alert-title" id="alert-title">Alert</div>
+      <div class="alert-message" id="alert-message"></div>
+      <div class="alert-time" id="alert-time"></div>
+      <a class="btn-conference" id="btn-conference" href="https://whereby.com/cmalert" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.899L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
+        </svg>
+        Entra in Conference Call
+      </a>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-label">Notifiche</div>
+        <div class="info-card-value" id="notif-status">—</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Ultimo alert</div>
+        <div class="info-card-value" id="last-alert">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-footer">
+    <button class="btn-admin" onclick="showAdminLogin()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>
+      Amministratore
+    </button>
+  </div>
+</div>
+
+<!-- SCHERMATA LOGIN ADMIN -->
+<div class="screen" id="screen-login">
+  <div class="admin-header">
+    <button class="btn-back" onclick="showMain()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </button>
+    <div class="admin-title">Accesso Amministratore</div>
+  </div>
+
+  <div class="login-form">
+    <div class="login-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#90A4AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM3.75 20.105A8.25 8.25 0 0112 15.75a8.25 8.25 0 018.25 4.355"/>
+      </svg>
+    </div>
+    <div class="login-title">Pannello Admin</div>
+    <div class="login-sub">Inserisci la password per accedere</div>
+    <input type="password" class="input-field" id="pwd-input" placeholder="Password" autocomplete="current-password">
+    <div class="login-error" id="login-error"></div>
+    <button class="btn-login" onclick="doLogin()">Accedi</button>
+  </div>
+</div>
+
+<!-- SCHERMATA ADMIN PANEL -->
+<div class="screen" id="screen-admin">
+  <div class="admin-header">
+    <button class="btn-back" onclick="doLogout()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </button>
+    <div class="admin-title">Invio Alert</div>
+  </div>
+
+  <div class="admin-content">
+    <div>
+      <div class="section-label">Seleziona livello</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+        <div class="level-card" id="card-1" onclick="selectLevel(1)">
+          <div class="level-dot dot-1"></div>
+          <div class="level-info">
+            <div class="level-name">Codice Verde — Monitoraggio</div>
+            <div class="level-desc">Situazione in osservazione · Aggiornamenti su Signal</div>
+          </div>
+          <div class="level-badge badge-1">Verde</div>
+        </div>
+        <div class="level-card" id="card-2" onclick="selectLevel(2)">
+          <div class="level-dot dot-2"></div>
+          <div class="level-info">
+            <div class="level-name">Codice Giallo — Allerta</div>
+            <div class="level-desc">Convocata Riunione CdC</div>
+          </div>
+          <div class="level-badge badge-2">Giallo</div>
+        </div>
+        <div class="level-card" id="card-3" onclick="selectLevel(3)">
+          <div class="level-dot dot-3"></div>
+          <div class="level-info">
+            <div class="level-name">Codice Rosso — Crisi</div>
+            <div class="level-desc">Convocata Riunione CdC</div>
+          </div>
+          <div class="level-badge badge-3">Rosso</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-box">
+      <div class="preview-label">Anteprima notifica</div>
+      <div class="preview-text" id="preview-text">Seleziona un livello per vedere il messaggio.</div>
+    </div>
+
+    <button class="btn-send" id="btn-send" disabled onclick="confirmSend()">
+      Seleziona un livello
+    </button>
+
+    <div class="status-bar idle" id="status-bar"></div>
+
+    <div class="history-section" id="history-section" style="display:none;">
+      <div class="section-label">Alert inviati</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <div class="admin-footer">
+    <button class="btn-logout" onclick="doLogout()">Esci dalla modalità admin</button>
+  </div>
+</div>
+
+<script>
+  const PASSWORD = 'TT&AalertSystem#2026';
+
+  const levels = {
+    1: {
+      label: 'Codice Verde — Monitoraggio',
+      push_message: 'Situazione in monitoraggio. Seguire aggiornamenti su chat Signal.',
+      twiml_url: 'https://handler.twilio.com/twiml/EH3f69e539187c3634fde26afa72de28f7',
+      push_url: null
+    },
+    2: {
+      label: 'Codice Giallo — Allerta',
+      push_message: 'Codice Giallo. Riunione CdC convocata. Clicca sulla notifica per entrare in conference call.',
+      twiml_url: 'https://handler.twilio.com/twiml/EHf3cc2e94ef4ccc6525345efc766afcf3',
+      push_url: 'https://whereby.com/cmalert'
+    },
+    3: {
+      label: 'Codice Rosso — Crisi',
+      push_message: 'Attenzione Codice Rosso. Attivazione immediata. Clicca sulla notifica per entrare in conference call.',
+      twiml_url: 'https://handler.twilio.com/twiml/EH0c958723cc2162697beb395ec3a1560c',
+      push_url: 'https://whereby.com/cmalert'
+    }
+  };
+
+  let selectedLevel = null;
+  let alertHistory = [];
+
+  // NAVIGATION
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showMain() { showScreen('screen-main'); }
+  function showAdminLogin() {
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('login-error').textContent = '';
+    showScreen('screen-login');
+  }
+
+  // AUTH
+  function doLogin() {
+    const val = document.getElementById('pwd-input').value;
+    if (val === PASSWORD) {
+      showScreen('screen-admin');
+    } else {
+      document.getElementById('login-error').textContent = 'Password errata. Riprova.';
+      document.getElementById('pwd-input').value = '';
+    }
+  }
+
+  function doLogout() {
+    selectedLevel = null;
+    resetAdminUI();
+    showMain();
+  }
+
+  // LEVEL SELECTION
+  function selectLevel(n) {
+    selectedLevel = n;
+    [1,2,3].forEach(i => {
+      document.getElementById('card-'+i).className = 'level-card' + (i===n ? ' selected-'+i : '');
+    });
+    document.getElementById('preview-text').textContent = levels[n].push_message;
+    document.getElementById('preview-text').className = 'preview-text active';
+    const btn = document.getElementById('btn-send');
+    btn.disabled = false;
+    btn.className = 'btn-send ready-'+n;
+    btn.textContent = 'Invia — ' + levels[n].label;
+    setStatus('idle', '');
+  }
+
+  function confirmSend() {
+    if (!selectedLevel) return;
+    const lv = levels[selectedLevel];
+    const ok = confirm('Confermi invio allerta?\n\n' + lv.label + '\n\n"' + lv.push_message + '"');
+    if (ok) sendAlert();
+  }
+
+  async function sendAlert() {
+    const lv = levels[selectedLevel];
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true;
+    btn.textContent = 'Invio in corso...';
+    setStatus('sending', 'Invio alert in corso...');
+
+    try {
+      await fetch('/.netlify/functions/send-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          livello: selectedLevel,
+          label: lv.label,
+          push_message: lv.push_message,
+          twiml_url: lv.twiml_url,
+          push_url: lv.push_url
+        })
+      });
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      addHistory(lv.label, timeStr, selectedLevel);
+      setStatus('success', 'Alert inviato — ' + timeStr);
+
+      // Aggiorna schermata principale
+      document.getElementById('last-alert').textContent = timeStr;
+      resetAdminUI();
+
+    } catch(e) {
+      setStatus('error', 'Errore di connessione. Riprova.');
+      btn.disabled = false;
+      btn.textContent = 'Riprova';
+    }
+  }
+
+  function setStatus(type, text) {
+    const el = document.getElementById('status-bar');
+    el.className = 'status-bar ' + type;
+    el.textContent = text;
+  }
+
+  function resetAdminUI() {
+    selectedLevel = null;
+    [1,2,3].forEach(i => document.getElementById('card-'+i).className = 'level-card');
+    document.getElementById('preview-text').textContent = 'Seleziona un livello per vedere il messaggio.';
+    document.getElementById('preview-text').className = 'preview-text';
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true;
+    btn.className = 'btn-send';
+    btn.textContent = 'Seleziona un livello';
+  }
+
+  function addHistory(label, time, level) {
+    alertHistory.unshift({ label, time, level });
+    if (alertHistory.length > 5) alertHistory.pop();
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const colors = { 1: '#43A047', 2: '#FFA726', 3: '#EF5350' };
+    const el = document.getElementById('history-list');
+    const section = document.getElementById('history-section');
+    if (alertHistory.length === 0) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    el.innerHTML = alertHistory.map(h =>
+      `<div class="history-item">
+        <div class="history-dot" style="background:${colors[h.level]}"></div>
+        <div class="history-text">${h.label}</div>
+        <div class="history-time">${h.time}</div>
+      </div>`
+    ).join('');
+  }
+
+  // NOTIFICHE STATUS
+  function checkNotifStatus() {
+    if ('Notification' in window) {
+      const el = document.getElementById('notif-status');
+      if (Notification.permission === 'granted') {
+        el.textContent = 'Attive';
+        el.style.color = '#43A047';
+      } else if (Notification.permission === 'denied') {
+        el.textContent = 'Negate';
+        el.style.color = '#EF5350';
+      } else {
+        el.textContent = 'In attesa';
+        el.style.color = '#FFA726';
+      }
+    }
+  }
+
+  // KEYBOARD
+  document.getElementById('pwd-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // INIT
+  window.addEventListener('load', checkNotifStatus);
+</script>
+</body>
+</html>
