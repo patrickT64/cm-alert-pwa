@@ -469,9 +469,9 @@
       margin-bottom: 4px;
     }
 
-    .level-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
+    .level-card-1 {
+      background: rgba(46,125,50,0.18);
+      border: 1px solid rgba(67,160,71,0.4);
       border-radius: 14px;
       padding: 18px 20px;
       cursor: pointer;
@@ -480,11 +480,34 @@
       align-items: center;
       gap: 16px;
     }
-
-    .level-card:hover { border-color: var(--border2); }
-    .level-card.selected-1 { border-color: rgba(67,160,71,0.5); background: rgba(46,125,50,0.1); }
-    .level-card.selected-2 { border-color: rgba(245,124,0,0.5); background: rgba(230,81,0,0.1); }
-    .level-card.selected-3 { border-color: rgba(198,40,40,0.5); background: rgba(183,28,28,0.12); }
+    .level-card-2 {
+      background: rgba(230,81,0,0.18);
+      border: 1px solid rgba(245,124,0,0.4);
+      border-radius: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .level-card-3 {
+      background: rgba(183,28,28,0.20);
+      border: 1px solid rgba(198,40,40,0.5);
+      border-radius: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .level-card-1:hover { border-color: rgba(67,160,71,0.7); background: rgba(46,125,50,0.28); }
+    .level-card-2:hover { border-color: rgba(245,124,0,0.7); background: rgba(230,81,0,0.28); }
+    .level-card-3:hover { border-color: rgba(198,40,40,0.7); background: rgba(183,28,28,0.30); }
+    .level-card-1.selected { border-color: rgba(67,160,71,0.9); background: rgba(46,125,50,0.35); box-shadow: 0 0 12px rgba(67,160,71,0.2); }
+    .level-card-2.selected { border-color: rgba(245,124,0,0.9); background: rgba(230,81,0,0.35); box-shadow: 0 0 12px rgba(245,124,0,0.2); }
+    .level-card-3.selected { border-color: rgba(198,40,40,0.9); background: rgba(183,28,28,0.38); box-shadow: 0 0 12px rgba(198,40,40,0.25); }
 
     .level-dot {
       width: 12px;
@@ -742,7 +765,7 @@
     <div>
       <div class="section-label">Seleziona livello</div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
-        <div class="level-card" id="card-1" onclick="selectLevel(1)">
+        <div class="level-card-1" id="card-1" onclick="selectLevel(1)">
           <div class="level-dot dot-1"></div>
           <div class="level-info">
             <div class="level-name">Codice Verde — Monitoraggio</div>
@@ -750,7 +773,7 @@
           </div>
           <div class="level-badge badge-1">Verde</div>
         </div>
-        <div class="level-card" id="card-2" onclick="selectLevel(2)">
+        <div class="level-card-2" id="card-2" onclick="selectLevel(2)">
           <div class="level-dot dot-2"></div>
           <div class="level-info">
             <div class="level-name">Codice Giallo — Allerta</div>
@@ -758,7 +781,7 @@
           </div>
           <div class="level-badge badge-2">Giallo</div>
         </div>
-        <div class="level-card" id="card-3" onclick="selectLevel(3)">
+        <div class="level-card-3" id="card-3" onclick="selectLevel(3)">
           <div class="level-dot dot-3"></div>
           <div class="level-info">
             <div class="level-name">Codice Rosso — Crisi</div>
@@ -852,7 +875,7 @@
   function selectLevel(n) {
     selectedLevel = n;
     [1,2,3].forEach(i => {
-      document.getElementById('card-'+i).className = 'level-card' + (i===n ? ' selected-'+i : '');
+      document.getElementById('card-'+i).className = 'level-card-'+i + (i===n ? ' selected' : '');
     });
     document.getElementById('preview-text').textContent = levels[n].push_message;
     document.getElementById('preview-text').className = 'preview-text active';
@@ -914,7 +937,7 @@
 
   function resetAdminUI() {
     selectedLevel = null;
-    [1,2,3].forEach(i => document.getElementById('card-'+i).className = 'level-card');
+    [1,2,3].forEach(i => document.getElementById('card-'+i).className = 'level-card-'+i);
     document.getElementById('preview-text').textContent = 'Seleziona un livello per vedere il messaggio.';
     document.getElementById('preview-text').className = 'preview-text';
     const btn = document.getElementById('btn-send');
